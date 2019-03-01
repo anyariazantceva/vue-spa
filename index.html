@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>wines-list</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  </head>
+  <body>
+    <div id="app">
+      <table class="table table-bordered">
+          <tr>
+            <th scope="col">Wine ID</th>
+            <th scope="col">Name</th>
+            <th scope="col">Vintage</th>
+            <th scope="col">Producer</th>
+          </tr>
+          <tr v-for="(wine, index) in wines" :key="wine.id" is="wine" :wine="wine"></tr>   
+      </table>
+    </div>
+
+    <template id="template-wine">
+      <tr>
+          <th scope="row">{{ wine.wineId }}</th>
+          <td>{{ wine.name }}</td>
+          <td>{{ wine.producer}}</td>
+          <td>{{ wine.vintage }}</td>
+      </tr>
+    </template>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.js"></script>
+    
+    <script>
+      Vue.component('wine', {
+        template: "#template-wine",
+        props: ['wine'],
+      });
+
+      const vm = new Vue({
+        el: '#app',
+        data: {
+          wines: []
+        },
+        mounted: function() {
+          const vm = this;
+          $.get('http://devboapi.vindome.net/api/Wines', function(data) {
+            let wines = data.list.slice(0, 10).map(function(wines) {
+              return wines
+            })
+            vm.wines = wines;
+          })
+        }
+      })
+    </script>
+  </body>
+</html>
+
